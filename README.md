@@ -1,4 +1,4 @@
-# UG'g Public Colab Server
+# UG's Public Colab Server
 
 ## To Run
 
