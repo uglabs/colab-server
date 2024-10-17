@@ -5,7 +5,7 @@
 Install [Docker Desktop](https://www.docker.com/products/docker-desktop) and run the following command:
 
 ```bash
-docker run --rm -it -p 9876:9876 ghcr.io/uglabs/colab-server:main
+docker run --env-file .env --rm -it -p 9876:9876 ghcr.io/uglabs/colab-server:main
 ```
 
 Go to [Google Colab](https://colab.research.google.com/) and connect to the local runtime
