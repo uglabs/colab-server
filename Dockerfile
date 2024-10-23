@@ -1,15 +1,34 @@
 FROM python:3.12
+COPY --from=ghcr.io/astral-sh/uv /uv /usr/bin/uv
+ENV UV_SYSTEM_PYTHON=1
 
-RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install uv
+WORKDIR /content
 
-RUN uv venv --seed
+RUN git config --global credential.helper store
 
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv pip install jupyter
+    UV_LINK_MODE=copy \
+    uv pip install \
+      git+https://github.com/uglabs/colabtools.git@a065bcd \
+      httplib2 \
+      jupyter \
+      jupyter_contrib_nbextensions \
+      numpy \
+      pandas \
+      pillow
 
-VOLUME /root/.cache/uv
-VOLUME /root/.cache/pip
+VOLUME /root/.cache/uv /root/.cache/pip /content /root/.cache/huggingface
 
 EXPOSE 9876
-CMD ["uv", "run", "jupyter", "notebook", "--NotebookApp.allow_origin='https://colab.research.google.com'", "--port=9876", "--NotebookApp.port_retries=0", "--allow-root", "--ServerApp.ip", "0.0.0.0"]
+CMD [ \
+  "uv", \
+  "run", \
+  "jupyter", \
+  "lab", \
+  "--NotebookApp.allow_origin='https://colab.research.google.com'", \
+  "--port=9876", \
+  "--allow-root", \
+  "--NotebookApp.port_retries=0", \
+  "--ServerApp.ip", \
+  "0.0.0.0"\
+]
